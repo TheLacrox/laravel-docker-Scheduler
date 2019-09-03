@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Database migrations
+cd /application
+php artisan migrate:fresh --seed
+php artisan storage:link

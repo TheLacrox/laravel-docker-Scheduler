@@ -1,0 +1,62 @@
+version: "3.1"
+
+services:
+
+  mysql:
+    image: mysql:5.7
+    container_name: "${APP_SLUG}_mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_USER_PASS}
+    ports:
+      - "${DB_PORT}:3306"
+
+  webapp:
+    image: nginx:alpine
+    container_name: "${APP_SLUG}_webapp"
+    working_dir: /var/www
+    links:
+      - php-fpm:php-fpm
+    volumes:
+      - ./application:/var/www:cached
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+     - "${HTTP_PORT}:80"
+
+  redis:
+    image: redis:alpine
+    container_name: "${APP_SLUG}_redis"
+    restart: always
+
+  php-fpm:
+    build: .
+    container_name: "${APP_SLUG}_php-fpm"
+    links:
+      - mysql:mysql
+    volumes:
+      - ./application:/var/www:cached
+      - ./docker/php-fpm/scripts/app-init:/usr/local/bin/app-init
+    environment:
+      APP_SLUG: ${APP_SLUG}
+      DB_DATABASE: ${DB_NAME}
+      DB_HOST: "${APP_SLUG}_mysql"
+      DB_PORT: ${DB_PORT}
+      DB_USERNAME: ${DB_USER}
+      DB_PASSWORD: ${DB_USER_PASS}
+      APP_NAME: ${APP_SLUG}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_ENV: ${APP_ENV}
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: "${APP_SLUG}_phpmyadmin"
+    links:
+      - mysql:mysql
+    ports:
+      - "${PHPMYADMIN_PORT}:80"
+    environment:
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      PMA_HOST: "${APP_SLUG}_mysql"
