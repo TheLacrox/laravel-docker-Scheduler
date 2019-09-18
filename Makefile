@@ -49,3 +49,7 @@ dev: up composer-install app-init migrate-fresh
 run: 
 	cd .\application &	npm i
 	cd .\application &	npm run dev
+
+permission:
+	chgrp -R www-data storage bootstrap/cache
+	chmod -R ug+rwx storage bootstrap/cache

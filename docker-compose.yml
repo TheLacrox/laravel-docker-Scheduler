@@ -14,9 +14,8 @@ services:
       - "${DB_PORT}:3306"
 
   webapp:
-    image: nginx:alpine
+    build: ./docker/nginx
     container_name: "${APP_SLUG}_webapp"
-    working_dir: /var/www
     links:
       - php-fpm:php-fpm
     volumes:
