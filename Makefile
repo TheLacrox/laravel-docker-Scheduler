@@ -51,5 +51,5 @@ run:
 	cd .\application &	npm run dev
 
 permission:
-	chgrp -R www-data .application/storage .application/bootstrap/cache
-	chmod -R ug+rwx .application/storage .application/bootstrap/cache
+	chgrp -R www-data ./application/storage ./application/bootstrap/cache
+	chmod -R ug+rwx ./application/storage ./application/bootstrap/cache
