@@ -14,4 +14,5 @@ RUN apt-get clean
 RUN curl --silent --show-error https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
 
+run chmod -R 755 .
 WORKDIR /var/www
